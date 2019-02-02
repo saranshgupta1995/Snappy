@@ -1,4 +1,16 @@
 {
     "name": "@saransh184/snappy",
-    "version": "2.0.0"
+    "version": "2.0.0",
+    "author": {
+        "name": "Saransh Gupta",
+        "email": "saranshgupta1995@gmail.com"
+    },
+    "description": "A package to save and load scopes as needed",
+    "keywords": [
+        "Snappy"
+    ],
+    "license": "MIT",
+    "repository": {
+        "url": "https://github.com/saranshgupta1995/Snappy"
+    }
 }
