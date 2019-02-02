@@ -7,7 +7,11 @@
     },
     "description": "A package to save and load scopes as needed",
     "keywords": [
-        "Snappy"
+        "Snappy",
+        "modules",
+        "save",
+        "load",
+        "javascript"
     ],
     "license": "MIT",
     "repository": {
