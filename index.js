@@ -41,6 +41,7 @@
                 if (isNM(newScope[prop])) {
                     keyValues[prop] = newScope[prop]
                 } else if (typeof (newScope[prop]) !== 'function') {
+                    snaps[`>${hashKey}.${prop}>type`] = Object.prototype.toString.call(newScope[prop]) === '[object Array]'?[]:{};
                     globalScope.takeSnap(`${hashKey}.${prop}`, newScope[prop], [])
                 } else {
                 }
@@ -56,13 +57,11 @@
         return JSON.parse(JSON.stringify(snaps));
     }
 
-    globalScope.getSnap = function (hashKey) {
-        return snaps[hashKey];
-    }
-
     globalScope.restoreSnap = function (hashKey, newScope = globalScope) {
 
-        let allHashes = allPropertiesOf(snaps).filter(x => x.startsWith(`${hashKey}.`));
+        let allHashes = allPropertiesOf(snaps).filter(x => x.startsWith(`${hashKey}.`)).sort((a, b) => {
+            return (a.match(/\./g) || []).length - (b.match(/\./g) || []).length;
+        });
         allHashes.forEach(hash => {
             let currentSnapSet = snaps[hash];
             let cleanHash = hash.slice(0, hash.length - 1);
@@ -70,8 +69,12 @@
             let allSnaps = allPropertiesOf(currentSnapSet)
             let cleanHashArray = cleanHash.split('.');
             cleanHashArray = cleanHashArray.slice(1, cleanHashArray.length)
-            cleanHashArray.forEach(propLevel => {
-                projectedScope = projectedScope[propLevel]
+            cleanHashArray.forEach((propLevel, i) => {
+                if (projectedScope[propLevel] === undefined && cleanHashArray.length - i >= 1){
+                    projectedScope[propLevel] = [];
+                    // projectedScope[propLevel] = JSON.parse(JSON.stringify(snaps[`>${cleanHash}>type`]));
+                }
+                projectedScope = projectedScope[propLevel];
             })
             allSnaps.forEach(snap => {
                 projectedScope[snap] = currentSnapSet[snap];
