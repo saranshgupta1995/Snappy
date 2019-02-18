@@ -32,6 +32,7 @@ let takeSnap = function (hashKey, newScope, skipSnapping = []) {
             if (isNM(newScope[prop])) {
                 keyValues[prop] = newScope[prop]
             } else if (typeof (newScope[prop]) !== 'function') {
+                snaps[`>${hashKey}.${prop}>type`] = Object.prototype.toString.call(newScope[prop]) === '[object Array]' ? [] : {};
                 takeSnap(`${hashKey}.${prop}`, newScope[prop], [])
             } else {
             }
@@ -43,17 +44,11 @@ let takeSnap = function (hashKey, newScope, skipSnapping = []) {
 
 }
 
-let showAllSnaps = function () {
-    return JSON.parse(JSON.stringify(snaps));
-}
-
-let getSnap = function (hashKey) {
-    return snaps[hashKey];
-}
-
 let restoreSnap = function (hashKey, newScope) {
 
-    let allHashes = allPropertiesOf(snaps).filter(x => x.startsWith(`${hashKey}.`));
+    let allHashes = allPropertiesOf(snaps).filter(x => x.startsWith(`${hashKey}.`)).sort((a, b) => {
+        return (a.match(/\./g) || []).length - (b.match(/\./g) || []).length;
+    });
     allHashes.forEach(hash => {
         let currentSnapSet = snaps[hash];
         let cleanHash = hash.slice(0, hash.length - 1);
@@ -61,8 +56,12 @@ let restoreSnap = function (hashKey, newScope) {
         let allSnaps = allPropertiesOf(currentSnapSet)
         let cleanHashArray = cleanHash.split('.');
         cleanHashArray = cleanHashArray.slice(1, cleanHashArray.length)
-        cleanHashArray.forEach(propLevel => {
-            projectedScope = projectedScope[propLevel]
+        cleanHashArray.forEach((propLevel, i) => {
+            if (projectedScope[propLevel] === undefined && cleanHashArray.length - i >= 1) {
+                projectedScope[propLevel] = [];
+                // projectedScope[propLevel] = JSON.parse(JSON.stringify(snaps[`>${cleanHash}>type`]));
+            }
+            projectedScope = projectedScope[propLevel];
         })
         allSnaps.forEach(snap => {
             projectedScope[snap] = currentSnapSet[snap];
@@ -81,7 +80,7 @@ let restoreSnap = function (hashKey, newScope) {
     });
 }
 
-module.exports={
-    takeSnap:takeSnap,
-    restoreSnap:restoreSnap
+module.exports = {
+    takeSnap: takeSnap,
+    restoreSnap: restoreSnap
 }
