@@ -54,7 +54,7 @@ let getAllTypes = () => {
 }
 
 
-globalScope.restoreSnapTypes = function (hashKey, newScope = globalScope) {
+let restoreSnapTypes = function (hashKey, newScope = globalScope) {
     let allHashes = allPropertiesOf(typeSnap).filter(x => x.startsWith(`${hashKey}.`)).sort((a, b) => {
         return (a.match(/\./g) || []).length - (b.match(/\./g) || []).length;
     });
