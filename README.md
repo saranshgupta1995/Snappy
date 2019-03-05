@@ -9,11 +9,6 @@
 $ npm i --save @saransh184/snappy
 ```
 
-### Include through cdn
-```html
-<script src="http://d2vcmd2ryq7iya.cloudfront.net/snappy-cdn.js">
-```
-
 ### Example
 ```javascript
 >> let a={
