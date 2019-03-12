@@ -35,3 +35,10 @@ $ npm i --save @saransh184/snappy
 }
 
 ```
+
+### Example
+To see a small example of the library in work, see a live demo at - 
+https://saranshgupta1995.github.io/PacMan/
+### Issues 
+To raise any issues, go through the github repo -
+https://github.com/saranshgupta1995/Snappy/issues
